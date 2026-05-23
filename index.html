@@ -1752,6 +1752,16 @@ function startTalk(enc) {
   encSrcEl.textContent = enc.source;
   encEl.classList.add('show');
   hidePrompt();
+  // Optional: notify parent window (Eazo wrapper) so it can persist to memory.
+  // No-op when running standalone.
+  try {
+    if (window.parent !== window) {
+      window.parent.postMessage({
+        type: 'encounter:open',
+        name: enc.name, line: enc.line, source: enc.source,
+      }, '*');
+    }
+  } catch (_) { /* ignore */ }
 }
 function endTalk() {
   talkingTo = null;
